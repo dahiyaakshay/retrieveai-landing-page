@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RetrieveAI — AI Retrieval Intelligence Engine · Portfolio Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --plum: #9b87e8;
+  --plum-light: #c4b5f4;
+  --plum-dark: #7c6bd4;
+  --navy: #1a1825;
+  --navy-mid: #252235;
+  --bg: #f4f3f8;
+  --soft: #faf9fd;
+  --lime: #d4f542;
+  --orange: #ffb347;
+  --border: #ece9f5;
+  --text: #1a1825;
+  --text-muted: #6b6580;
+  --white: #ffffff;
+  --radius: 16px;
+  --shadow: 0 4px 24px rgba(155,135,232,0.10);
+  --shadow-lg: 0 8px 40px rgba(155,135,232,0.18);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+h1,h2,h3,h4,h5 { font-family: 'Sora', sans-serif; }
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+
+/* ── UNDER CONSTRUCTION BANNER ── */
+.dev-banner {
+  background: linear-gradient(90deg, var(--navy) 0%, var(--navy-mid) 100%);
+  border-bottom: 1px solid rgba(155,135,232,0.3);
+  padding: 10px 5%;
+  z-index: 200;
+  animation: slideIn .4s ease both;
+}
+.dev-banner-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  flex-wrap: wrap; text-align: center;
+}
+.dev-banner p {
+  font-size: 0.78rem; font-family: 'DM Sans', sans-serif;
+  color: rgba(255,255,255,0.72); line-height: 1.5;
+}
+.dev-banner strong { color: var(--lime); font-weight: 700; }
+.dev-banner .banner-pill {
+  background: rgba(155,135,232,0.2); border: 1px solid rgba(155,135,232,0.35);
+  padding: 3px 12px; border-radius: 20px;
+  font-size: 0.7rem; font-weight: 700; color: var(--plum-light);
+  font-family: 'Sora', sans-serif; letter-spacing: .04em; white-space: nowrap;
+}
+
+/* ── NAVBAR ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(244,243,248,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 5%;
+}
+.nav-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1.1rem;
+}
+.nav-logo .logo-dot {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--plum), var(--plum-dark));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem;
+}
+.nav-links { display: flex; gap: 28px; align-items: center; }
+.nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--text-muted); transition: color .2s; }
+.nav-links a:hover { color: var(--plum); }
+.nav-proto-badge {
+  font-size: 0.68rem; font-weight: 700; padding: 4px 12px; border-radius: 20px;
+  background: rgba(212,245,66,0.18); color: #5a7000;
+  border: 1px solid rgba(212,245,66,0.45);
+  font-family: 'Sora', sans-serif; letter-spacing: .04em;
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 22px; border-radius: 50px; font-weight: 600;
+  font-size: 0.875rem; cursor: pointer; transition: all .2s; border: none;
+  font-family: 'DM Sans', sans-serif;
+}
+.btn-primary { background: var(--plum); color: white; }
+.btn-primary:hover { background: var(--plum-dark); box-shadow: 0 4px 16px rgba(155,135,232,0.35); transform: translateY(-1px); }
+.btn-outline { background: transparent; color: var(--plum); border: 1.5px solid var(--plum); }
+.btn-outline:hover { background: var(--plum); color: white; }
+.btn-lime { background: var(--lime); color: var(--navy); font-weight: 700; }
+.btn-lime:hover { background: #c8ef2e; transform: translateY(-1px); }
+
+/* ── HERO ── */
+.hero {
+  padding: 80px 5% 90px;
+  background: linear-gradient(135deg, #f0edfb 0%, var(--bg) 50%, #fdf8f0 100%);
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -120px; right: -120px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(155,135,232,0.18) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.hero::after {
+  content: ''; position: absolute; bottom: -100px; left: -80px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(212,245,66,0.12) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.hero-inner {
+  max-width: 2600px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+  position: relative; z-index: 1;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: white; border: 1px solid var(--border);
+  padding: 6px 14px; border-radius: 50px;
+  font-size: 0.75rem; font-weight: 600; color: var(--plum);
+  margin-bottom: 20px; box-shadow: var(--shadow);
+}
+.hero-badge .badge-dot { width: 6px; height: 6px; background: var(--orange); border-radius: 50%; animation: pulse-dot 2s ease-in-out infinite; }
+.hero h1 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.18; color: var(--navy); margin-bottom: 20px; }
+.hero h1 em { font-style: normal; color: var(--plum); }
+.hero p { font-size: 1rem; color: var(--text-muted); max-width: 480px; margin-bottom: 32px; line-height: 1.75; }
+.hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+.hero-content { animation: fadeUp .7s ease both; }
+
+.hero-image-wrap {
+  border-radius: var(--radius); border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg); overflow: hidden; background: var(--soft);
+  animation: fadeUp .9s .2s ease both;
+}
+.hero-image-wrap img { width: 100%; height: auto; display: block; }
+.hero-img-placeholder {
+  width: 100%; min-height: 360px;
+  background: linear-gradient(135deg, rgba(155,135,232,0.07), rgba(196,181,244,0.04));
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; padding: 32px; text-align: center;
+}
+.hero-img-placeholder .ph-icon { font-size: 2.5rem; }
+.hero-img-placeholder .ph-title { font-family: 'Sora', sans-serif; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); }
+.hero-img-placeholder .ph-file { font-size: 0.72rem; color: var(--plum); font-family: monospace; background: rgba(155,135,232,0.1); padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(155,135,232,0.2); }
+.hero-img-placeholder .ph-desc { font-size: 0.72rem; color: var(--text-muted); max-width: 220px; line-height: 1.6; }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--plum); background: rgba(155,135,232,0.1);
+  padding: 5px 14px; border-radius: 50px; margin-bottom: 16px;
+}
+.section-head { text-align: center; margin-bottom: 48px; }
+.section-head h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; color: var(--navy); margin-bottom: 12px; }
+.section-head p { color: var(--text-muted); font-size: 0.95rem; max-width: 580px; margin: 0 auto; }
+
+section { padding: 80px 5%; }
+.section-inner { max-width: 1200px; margin: 0 auto; }
+
+/* ── PROTOTYPE SCREENS ── */
+.screens { background: white; }
+.screens-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.screen-card {
+  border-radius: var(--radius); overflow: hidden;
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+  transition: all .25s; background: white;
+}
+.screen-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--plum-light); }
+.screen-img-wrap {
+  overflow: hidden; background: var(--soft);
+  border-bottom: 1px solid var(--border);
+}
+.screen-img-wrap img { width: 100%; height: auto; display: block; transition: transform .35s ease; }
+.screen-card:hover .screen-img-wrap img { transform: scale(1.02); }
+.screen-img-placeholder {
+  width: 100%; height: 220px;
+  background: linear-gradient(135deg, rgba(155,135,232,0.07), rgba(212,245,66,0.04));
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+}
+.screen-img-placeholder .ph-icon { font-size: 2rem; }
+.screen-img-placeholder .ph-file { font-size: 0.7rem; color: var(--plum); font-family: monospace; background: rgba(155,135,232,0.1); padding: 3px 10px; border-radius: 20px; }
+.screen-info { padding: 20px 22px; }
+.screen-num { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: var(--plum); margin-bottom: 6px; font-family: 'Sora', sans-serif; }
+.screen-info h4 { font-size: 0.9rem; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+.screen-info p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.65; }
+
+/* ── SERVICES GRID ── */
+.services { background: var(--soft); }
+.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.service-card {
+  background: white; border-radius: var(--radius); padding: 28px;
+  border: 1px solid var(--border); box-shadow: var(--shadow); transition: all .25s;
+}
+.service-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--plum-light); }
+.service-icon {
+  width: 46px; height: 46px; border-radius: 12px;
+  background: linear-gradient(135deg, rgba(155,135,232,0.15), rgba(196,181,244,0.08));
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px; font-size: 1.3rem;
+}
+.service-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+.service-card p { font-size: 0.825rem; color: var(--text-muted); line-height: 1.65; }
+
+/* ── FEATURE SPOTLIGHT ── */
+.feature-spotlight { background: var(--bg); }
+.feature-spotlight-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: center;
+}
+.feature-text h2 { font-size: clamp(1.5rem, 2.8vw, 2rem); font-weight: 800; color: var(--navy); margin-bottom: 20px; }
+.feature-text > p { color: var(--text-muted); margin-bottom: 24px; line-height: 1.75; }
+.feature-items { display: flex; flex-direction: column; gap: 16px; margin-bottom: 28px; }
+.feature-item { display: flex; gap: 12px; }
+.feature-item-icon { width: 32px; height: 32px; flex-shrink: 0; border-radius: 8px; background: rgba(155,135,232,0.12); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; }
+.feature-item-body h4 { font-size: 0.875rem; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+.feature-item-body p { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
+.pill-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.pill { font-size: 0.72rem; font-weight: 700; padding: 5px 12px; border-radius: 20px; font-family: 'Sora', monospace; letter-spacing: .02em; }
+.pill-default { background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); }
+.pill-recommended { background: var(--plum); color: white; }
+.pill-accent { background: rgba(212,245,66,0.22); color: #5a7000; border: 1px solid rgba(212,245,66,0.5); }
+.feature-image { background: white; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-lg); overflow: hidden; }
+.img-bar { background: var(--bg); padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 6px; }
+.img-bar-dot { width: 8px; height: 8px; border-radius: 50%; }
+.img-content { padding: 20px; }
+.audit-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; background: var(--soft); border-radius: 10px;
+  border: 1px solid var(--border); margin-bottom: 8px;
+}
+.audit-row .url { font-family: monospace; color: var(--text-muted); font-size: 0.72rem; }
+.score-pill { font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+.s-high { background: rgba(212,245,66,0.3); color: #5a7000; }
+.s-mid { background: rgba(155,135,232,0.2); color: var(--plum-dark); }
+.s-low { background: rgba(255,179,71,0.2); color: #a06000; }
+
+/* ── DARK SECTION / DEFENSIVE ENGINEERING ── */
+.social-proof { background: var(--navy); padding: 64px 5%; }
+.social-proof-inner { max-width: 1200px; margin: 0 auto; text-align: center; }
+.social-proof h2 { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 800; color: white; margin-bottom: 12px; }
+.social-proof .sub { color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-bottom: 44px; max-width: 520px; margin-left: auto; margin-right: auto; }
+.proof-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.proof-card {
+  background: rgba(255,255,255,0.06); border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,0.1); padding: 24px;
+  text-align: left; transition: all .2s;
+}
+.proof-card:hover { background: rgba(155,135,232,0.12); border-color: rgba(155,135,232,0.3); }
+.proof-icon { font-size: 1.4rem; margin-bottom: 12px; }
+.proof-card h4 { font-size: 0.9rem; font-weight: 700; color: white; margin-bottom: 6px; }
+.proof-card p { font-size: 0.8rem; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+/* ── PIPELINE ── */
+.pipeline { background: white; }
+.pipeline-grid {
+  display: flex; align-items: flex-start; gap: 0;
+  overflow-x: auto; padding-bottom: 8px; margin-top: 40px;
+}
+.pipeline-node {
+  flex: 1; min-width: 110px;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  position: relative;
+}
+.pipeline-node:not(:last-child)::after {
+  content: '→'; position: absolute; right: -10px; top: 14px;
+  font-size: 1rem; color: var(--plum-light); font-weight: 700; z-index: 1;
+}
+.p-node-icon {
+  width: 48px; height: 48px; border-radius: 14px;
+  background: linear-gradient(135deg, rgba(155,135,232,0.15), rgba(155,135,232,0.05));
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; margin-bottom: 10px; transition: all .2s;
+}
+.pipeline-node:hover .p-node-icon { background: var(--plum); border-color: var(--plum); transform: scale(1.08); }
+.p-node-label { font-size: 0.72rem; font-weight: 700; color: var(--navy); font-family: 'Sora', sans-serif; }
+.p-node-sub { font-size: 0.65rem; color: var(--text-muted); margin-top: 2px; }
+
+/* ── INTEGRATIONS ── */
+.integrations { background: var(--soft); }
+.tech-grid { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-top: 36px; }
+.tech-badge {
+  display: flex; align-items: center; gap: 10px;
+  background: white; border: 1.5px solid var(--border);
+  padding: 12px 22px; border-radius: 14px;
+  box-shadow: var(--shadow); font-size: 0.85rem; font-weight: 600;
+  transition: all .2s;
+}
+.tech-badge:hover { border-color: var(--plum); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.tech-icon { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+
+/* ── WHY I BUILT IT ── */
+.why-built { background: var(--bg); }
+.why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; max-width: 1200px; margin: 0 auto; }
+.why-left h2 { font-size: clamp(1.4rem, 2.5vw, 1.85rem); font-weight: 800; color: var(--navy); margin-bottom: 20px; line-height: 1.25; }
+.why-left p { color: var(--text-muted); line-height: 1.8; margin-bottom: 16px; font-size: 0.92rem; }
+.why-left p strong { color: var(--navy); font-weight: 700; }
+.why-reasons { display: flex; flex-direction: column; gap: 14px; }
+.why-reason {
+  background: white; border-radius: var(--radius); padding: 18px 22px;
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+  display: flex; gap: 14px; align-items: flex-start; transition: all .2s;
+}
+.why-reason:hover { border-color: var(--plum-light); transform: translateX(4px); }
+.wr-icon { width: 34px; height: 34px; flex-shrink: 0; border-radius: 10px; background: rgba(155,135,232,0.12); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+.wr-text h4 { font-size: 0.875rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.wr-text p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
+
+/* ── SCOPE MODES ── */
+.scope-modes { background: var(--navy); padding: 80px 5%; }
+.scope-inner { max-width: 1200px; margin: 0 auto; }
+.scope-head { text-align: center; margin-bottom: 48px; }
+.scope-head h2 { color: white; font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; margin-bottom: 12px; }
+.scope-head p { color: rgba(255,255,255,0.5); max-width: 580px; margin: 0 auto; font-size: 0.9rem; line-height: 1.7; }
+.scope-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 40px; }
+.scope-card {
+  background: rgba(255,255,255,0.05); border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,0.1); padding: 26px; transition: all .25s;
+}
+.scope-card:hover { background: rgba(155,135,232,0.1); border-color: rgba(155,135,232,0.35); }
+.scope-card.featured { background: rgba(155,135,232,0.16); border-color: var(--plum); position: relative; }
+.scope-card.featured::before {
+  content: 'Recommended'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: var(--lime); color: var(--navy); font-size: 0.66rem; font-weight: 800;
+  padding: 3px 12px; border-radius: 20px; white-space: nowrap; font-family: 'Sora',sans-serif;
+}
+.scope-tag {
+  font-family: 'Sora', monospace; font-size: 0.7rem; font-weight: 700; letter-spacing: .03em;
+  color: var(--plum-light); background: rgba(155,135,232,0.2);
+  padding: 4px 10px; border-radius: 6px; display: inline-block; margin-bottom: 12px;
+}
+.scope-card h3 { font-size: 0.95rem; font-weight: 700; color: white; margin-bottom: 8px; }
+.scope-desc { font-size: 0.78rem; color: rgba(255,255,255,0.45); margin-bottom: 16px; line-height: 1.6; }
+.scope-detail {
+  font-size: 0.76rem; color: rgba(255,255,255,0.6);
+  padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.07);
+  display: flex; gap: 6px; align-items: flex-start;
+}
+.scope-detail:last-child { border-bottom: none; }
+.sd-key { color: rgba(255,255,255,0.32); min-width: 96px; flex-shrink: 0; font-size: 0.68rem; text-transform: uppercase; letter-spacing: .04em; padding-top: 1px; }
+.sd-val { color: rgba(255,255,255,0.75); font-weight: 500; }
+.scope-card.featured .sd-val { color: white; }
+.scope-table-wrap { background: rgba(255,255,255,0.04); border-radius: var(--radius); border: 1px solid rgba(255,255,255,0.08); overflow: hidden; overflow-x: auto; }
+.scope-table { width: 100%; border-collapse: collapse; }
+.scope-table th {
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+  color: rgba(255,255,255,0.32); padding: 14px 16px; text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.03);
+}
+.scope-table th:first-child { color: rgba(255,255,255,0.5); }
+.scope-table td { font-size: 0.8rem; color: rgba(255,255,255,0.6); padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.scope-table td:first-child { font-family: 'Sora', monospace; font-weight: 700; color: var(--plum-light); font-size: 0.75rem; }
+.scope-table tr:last-child td { border-bottom: none; }
+.scope-table tr.highlight td { background: rgba(155,135,232,0.08); }
+.check { color: var(--lime); font-weight: 800; }
+.partial { color: var(--orange); font-weight: 700; }
+.no-val { color: rgba(255,255,255,0.2); }
+
+/* ── FAQ ── */
+.faq { background: var(--soft); }
+.faq-inner { max-width: 900px; margin: 0 auto; }
+.faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.faq-item {
+  background: white; border-radius: var(--radius); padding: 26px;
+  border: 1px solid var(--border); box-shadow: var(--shadow); transition: all .2s;
+}
+.faq-item:hover { border-color: var(--plum-light); transform: translateY(-2px); }
+.faq-item h4 { font-size: 0.9rem; font-weight: 700; color: var(--navy); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.q-num { color: var(--plum); font-size: 0.75rem; font-weight: 800; flex-shrink: 0; }
+.faq-item p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.7; }
+
+/* ── BUILD STATUS ── */
+.build-status { background: var(--bg); }
+.build-inner { max-width: 860px; margin: 0 auto; }
+.build-list { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+.build-item {
+  background: white; border-radius: var(--radius); padding: 20px 24px;
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+  display: flex; align-items: flex-start; gap: 16px; transition: all .2s;
+}
+.build-item:hover { transform: translateX(4px); }
+.build-status-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+.build-item-text { flex: 1; }
+.build-item-text h4 { font-size: 0.9rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.build-item-text p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
+.build-item.done { border-left: 3px solid var(--lime); }
+.build-item.in-progress { border-left: 3px solid var(--plum); }
+.build-item.planned { border-left: 3px solid rgba(155,135,232,0.25); opacity: 0.75; }
+.build-badge { flex-shrink: 0; font-size: 0.66rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; font-family: 'Sora', sans-serif; letter-spacing: .04em; align-self: center; }
+.badge-done { background: rgba(212,245,66,0.18); color: #5a7000; border: 1px solid rgba(212,245,66,0.4); }
+.badge-progress { background: rgba(155,135,232,0.15); color: var(--plum-dark); border: 1px solid rgba(155,135,232,0.3); }
+.badge-planned { background: rgba(155,135,232,0.06); color: var(--text-muted); border: 1px solid var(--border); }
+
+/* ── CTA STRIP ── */
+.cta-strip { background: linear-gradient(135deg, var(--plum), var(--plum-dark)); padding: 64px 5%; text-align: center; }
+.cta-strip h2 { font-size: clamp(1.4rem, 2.5vw, 2rem); color: white; font-weight: 800; margin-bottom: 14px; }
+.cta-strip p { color: rgba(255,255,255,0.72); margin-bottom: 28px; max-width: 520px; margin-left: auto; margin-right: auto; font-size: 0.95rem; line-height: 1.7; }
+
+/* ── FOOTER ── */
+footer { background: var(--navy); padding: 60px 5% 32px; }
+.footer-inner { max-width: 1200px; margin: 0 auto; }
+.footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+.footer-brand .f-logo { font-family: 'Sora',sans-serif; font-size: 1.2rem; font-weight: 800; color: white; margin-bottom: 10px; }
+.footer-brand .f-tagline { font-size: 0.8rem; color: rgba(255,255,255,0.45); line-height: 1.65; max-width: 220px; }
+.proto-note-footer {
+  margin-top: 14px; font-size: 0.72rem; color: rgba(155,135,232,0.7);
+  font-family: 'Sora', sans-serif; font-weight: 600;
+  display: flex; align-items: center; gap: 6px;
+}
+.proto-note-footer::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--orange); flex-shrink: 0; animation: pulse-dot 2s ease-in-out infinite; }
+.footer-col h5 { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: rgba(255,255,255,0.3); margin-bottom: 16px; }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-col ul a { font-size: 0.82rem; color: rgba(255,255,255,0.55); transition: color .2s; }
+.footer-col ul a:hover { color: var(--plum-light); }
+.social-links { display: flex; gap: 10px; margin-top: 18px; }
+.social-link {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; color: rgba(255,255,255,0.45); transition: all .2s;
+}
+.social-link:hover { background: var(--plum); border-color: var(--plum); color: white; }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+}
+.footer-bottom p { font-size: 0.78rem; color: rgba(255,255,255,0.28); }
+.built-by { font-size: 0.78rem; color: rgba(255,255,255,0.4); font-family: 'Sora', sans-serif; }
+.built-by strong { color: var(--plum-light); font-weight: 700; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes slideIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
+  .scope-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .why-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hero-inner { grid-template-columns: 1fr; }
+  .feature-spotlight-inner { grid-template-columns: 1fr; }
+  .services-grid { grid-template-columns: 1fr; }
+  .proof-grid { grid-template-columns: 1fr; }
+  .scope-grid { grid-template-columns: 1fr 1fr; }
+  .faq-grid { grid-template-columns: 1fr; }
+  .screens-grid { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 480px) {
+  .scope-grid { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── UNDER CONSTRUCTION BANNER ── -->
+<div class="dev-banner">
+  <div class="dev-banner-inner">
+    <p>🚧 &nbsp;<strong>RetrieveAI</strong> is currently under active development. This prototype demonstrates a Retrieval Intelligence Engine. Access is limited and features are evolving.</p>
+    <span class="banner-pill">Prototype · Not Production</span>
+  </div>
+</div>
+
+<!-- ── NAVBAR ── -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <div class="logo-dot">⚙</div>
+      RetrieveAI
+    </div>
+    <div class="nav-links">
+      <a href="#screens">Prototype Screens</a>
+      <a href="#services">Modules</a>
+      <a href="#pipeline">Pipeline</a>
+      <a href="#scope-modes">Scope Modes</a>
+      <a href="#build-status">Build Status</a>
+    </div>
+    <span class="nav-proto-badge">Portfolio Prototype</span>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-badge"><span class="badge-dot"></span> AI Retrieval Engineering · Systems Prototype</div>
+      <h1>Engineer How AI Systems <em>Retrieve</em> Your Brand.</h1>
+      <p>RetrieveAI is a scoped-first Retrieval Intelligence Engine designed to measure AI visibility, entity strength, prompt coverage, and commerce-readiness inside generative systems.</p>
+      <div class="hero-ctas">
+        <a href="#pipeline" class="btn btn-primary">View Architecture →</a>
+        <a href="#screens" class="btn btn-outline">Explore Prototype Screens</a>
+      </div>
+    </div>
+    <div class="hero-image-wrap">
+      <img
+        src="imgs/16.png"
+        alt="RetrieveAI prototype — Overview dashboard showing AI Visibility Score, Entity Strength, Retrieval Coverage, and Prompt Simulation status"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+      />
+      <div class="hero-img-placeholder" style="display:none;">
+        <div class="ph-icon">📊</div>
+        <div class="ph-title">Overview &amp; AI Visibility Dashboard</div>
+        <div class="ph-file">15.png</div>
+        <div class="ph-desc">Place 15.png alongside this HTML file to render the prototype screenshot here.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROTOTYPE SCREENS ── -->
+<section class="screens" id="screens">
+  <div class="section-inner">
+    <div class="section-head">
+      <div class="section-label">Live Prototype Screens</div>
+      <h2>Prototype Interface Walkthrough</h2>
+      <p>Real screens from the RetrieveAI prototype — validating the retrieval scoring architecture, scope management, and commerce intelligence layers across the full audit pipeline.</p>
+    </div>
+    <div class="screens-grid">
+
+      <div class="screen-card">
+        <div class="screen-img-wrap">
+          <img
+            src="imgs/16.png"
+            alt="RetrieveAI Screen 1 — Overview and AI Visibility dashboard with composite scoring and audit job status"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+          />
+          <div class="screen-img-placeholder" style="display:none;"><div class="ph-icon">🎯</div><div class="ph-file">15.png</div></div>
+        </div>
+        <div class="screen-info">
+          <div class="screen-num">Screen 01</div>
+          <h4>Overview &amp; AI Visibility</h4>
+          <p>Composite scoring dashboard showing AI Visibility Score, Entity Strength, and Retrieval Coverage as normalized 0–100 metrics with trend overlays. Audit job status and recent simulation run history are surfaced at the top level.</p>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <div class="screen-img-wrap">
+          <img
+            src="imgs/17.png"
+            alt="RetrieveAI Screen 2 — Snapshot and Volatility tracking panel with score delta visualization across audit runs"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+          />
+          <div class="screen-img-placeholder" style="display:none;"><div class="ph-icon">📈</div><div class="ph-file">16.png</div></div>
+        </div>
+        <div class="screen-info">
+          <div class="screen-num">Screen 02</div>
+          <h4>Snapshot &amp; Volatility Tracking</h4>
+          <p>Score delta visualization across audit runs over time. Surfaces volatility in LLM retrieval behavior per entity. Identifies which scoring dimensions are stable across simulation runs and which are prompt-sensitive — enabling targeted remediation.</p>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <div class="screen-img-wrap">
+          <img
+            src="imgs/18.png"
+            alt="RetrieveAI Screen 3 — URL Discovery and Scope selection panel with crawl depth controls and scope type assignment"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+          />
+          <div class="screen-img-placeholder" style="display:none;"><div class="ph-icon">🔗</div><div class="ph-file">17.png</div></div>
+        </div>
+        <div class="screen-info">
+          <div class="screen-num">Screen 03</div>
+          <h4>URL Discovery &amp; Scope Selection</h4>
+          <p>Crawl depth controls, URL type classification, and scope mode assignment interface. Shows how the system maps site architecture into auditable surfaces before any prompt simulation begins. Handles single_page through full_site mode transitions.</p>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <div class="screen-img-wrap">
+          <img
+            src="imgs/15.png"
+            alt="RetrieveAI Screen 4 — Commerce Layer audit panel with purchase-intent signal density and product catalog intelligence scoring"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+          />
+          <div class="screen-img-placeholder" style="display:none;"><div class="ph-icon">🛒</div><div class="ph-file">18.png</div></div>
+        </div>
+        <div class="screen-info">
+          <div class="screen-num">Screen 04</div>
+          <h4>Commerce Layer Audit</h4>
+          <p>Purchase-intent signal density scoring, product catalog intelligence assessment, and AI-assisted commerce surface analysis. Evaluates how effectively structured product data performs in post-search generative discovery environments like conversational shopping.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── SERVICES / MODULES ── -->
+<section class="services" id="services">
+  <div class="section-inner">
+    <div class="section-head">
+      <div class="section-label">Core Modules</div>
+      <h2>What the Engine Measures</h2>
+      <p>Six precision-engineered scoring modules that audit, quantify, and surface how generative AI systems understand and retrieve a brand at inference time.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">🎯</div>
+        <h3>AI Visibility Score</h3>
+        <p>Measures how prominently a brand surfaces across LLM inference paths. Combines entity recall rate, prompt match frequency, and representation density into a normalized composite using deterministic simulation runs.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🧬</div>
+        <h3>Entity Strength Score</h3>
+        <p>Evaluates semantic depth and disambiguation clarity of a brand entity across structured data coverage, knowledge graph co-occurrence signals, and contextual representation quality in LLM-accessible content.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🔍</div>
+        <h3>Retrieval Coverage Engine</h3>
+        <p>Maps all retrievable surfaces — product pages, category clusters, FAQ nodes — and verifies each is correctly accessible, contextually coherent, and structured for AI retrieval pipelines and vector index ingestion.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🏗️</div>
+        <h3>Structured Clarity Audit</h3>
+        <p>Validates schema markup completeness, JSON-LD fidelity, and data structure correctness. Ensures pages communicate unambiguously to AI crawlers, embedding generators, and RAG context construction pipelines.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">⚡</div>
+        <h3>Prompt Simulation Engine</h3>
+        <p>Runs deterministic, temperature-zero LLM prompt simulations against scoped content using real-world query patterns. Identifies retrieval gaps, hallucination entry points, and entity coverage blind spots across each audit surface.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🛒</div>
+        <h3>Commerce Readiness Layer</h3>
+        <p>Audits product catalog intelligence, purchase-intent signal density, and AI-assisted commerce surface quality. Scores how effectively a brand converts within post-search generative discovery environments.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURE SPOTLIGHT ── -->
+<section class="feature-spotlight">
+  <div class="feature-spotlight-inner">
+    <div class="feature-text">
+      <div class="section-label">Architecture First</div>
+      <h2>Scoped-First Audit Architecture</h2>
+      <p>Every audit begins with intelligent scope definition — matching audit depth to the specific use case, controlling API budget consumption, and enabling progressive intelligence layering across pipeline stages. No blind full-site sweeps.</p>
+      <div class="feature-items">
+        <div class="feature-item">
+          <div class="feature-item-icon">🔗</div>
+          <div class="feature-item-body">
+            <h4>URL Discovery</h4>
+            <p>Automated crawl mapping via sitemap parsing, Playwright-driven link extraction, and DataForSEO graph enrichment. Produces a typed, classified URL inventory before any LLM work is dispatched.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-item-icon">📦</div>
+          <div class="feature-item-body">
+            <h4>Context Bundle Generation</h4>
+            <p>Semantically related pages are bundled into retrieval contexts before prompt dispatch — reducing token waste, improving simulation fidelity, and enabling cross-URL entity coherence scoring within the same job.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-item-icon">⚙️</div>
+          <div class="feature-item-body">
+            <h4>Scope Type Assignment</h4>
+            <p>Four scope modes each carry distinct page caps, prompt universe sizes, scoring weight distributions, and API cost envelopes. Scope selection is the first architectural decision in every audit configuration.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-item-icon">📊</div>
+          <div class="feature-item-body">
+            <h4>Progressive Audit Depth</h4>
+            <p>Scores are computed in ordered layers — shallow visibility scores first, deep simulation and recommendation generation last. No LLM work is dispatched until prior pipeline stages pass validation and caching.</p>
+          </div>
+        </div>
+      </div>
+      <div class="pill-tags">
+        <span class="pill pill-default">single_page</span>
+        <span class="pill pill-recommended">context_cluster ✦ recommended</span>
+        <span class="pill pill-default">category</span>
+        <span class="pill pill-accent">full_site</span>
+      </div>
+    </div>
+    <div class="feature-image">
+      <div class="img-bar">
+        <div class="img-bar-dot" style="background:#ff6058;"></div>
+        <div class="img-bar-dot" style="background:#ffbc2e;"></div>
+        <div class="img-bar-dot" style="background:#28c840;"></div>
+        <span style="font-size:0.72rem;color:var(--text-muted);margin-left:auto;font-family:'Sora',sans-serif;">Scope — context_cluster · 6 URLs</span>
+      </div>
+      <div class="img-content">
+        <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:12px;">URL Retrieval Audit Results</div>
+        <div class="audit-row"><span class="url">/products/ai-engine</span><span class="score-pill s-high">94</span></div>
+        <div class="audit-row"><span class="url">/solutions/commerce</span><span class="score-pill s-high">88</span></div>
+        <div class="audit-row"><span class="url">/about/brand-entity</span><span class="score-pill s-mid">71</span></div>
+        <div class="audit-row"><span class="url">/faq/ai-retrieval</span><span class="score-pill s-mid">65</span></div>
+        <div class="audit-row"><span class="url">/catalog/products</span><span class="score-pill s-low">48</span></div>
+        <div class="audit-row"><span class="url">/blog/llm-context</span><span class="score-pill s-mid">77</span></div>
+        <div style="margin-top:14px;padding:14px;background:var(--soft);border-radius:10px;border:1px solid var(--border);">
+          <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:8px;">Context Bundle Health</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <div style="flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;"><div style="width:78%;height:100%;background:linear-gradient(90deg,var(--plum),var(--plum-light));border-radius:3px;"></div></div>
+            <span style="font-size:0.7rem;font-weight:700;color:var(--plum);">78%</span>
+          </div>
+          <div style="margin-top:6px;font-size:0.7rem;color:var(--text-muted);">2 URLs require structured data enrichment before simulation dispatch.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── DEFENSIVE ENGINEERING ── -->
+<section class="social-proof">
+  <div class="social-proof-inner">
+    <div class="section-label" style="background:rgba(155,135,232,0.2);color:var(--plum-light);">Reliability Engineering</div>
+    <h2>Built With Defensive Engineering.</h2>
+    <p class="sub">Production-grade reliability primitives designed into the audit pipeline from the start — not retrofitted as patches after the architecture solidified.</p>
+    <div class="proof-grid">
+      <div class="proof-card">
+        <div class="proof-icon">🧭</div>
+        <h4>Audit Orchestrator</h4>
+        <p>Centralized job coordination layer sequences crawl, extraction, prompt simulation, and scoring tasks with dependency graph awareness, partial failure recovery, and idempotent job replay support.</p>
+      </div>
+      <div class="proof-card">
+        <div class="proof-icon">🔒</div>
+        <h4>Circuit Breaker Protection</h4>
+        <p>Automatic fault isolation prevents cascading failures across audit jobs. Services trip independently and recover via exponential backoff without requiring full orchestrator restarts or manual intervention.</p>
+      </div>
+      <div class="proof-card">
+        <div class="proof-icon">⏱️</div>
+        <h4>Timeout Budget Enforcement</h4>
+        <p>Every LLM call, Playwright crawl, and external API request operates within explicit timeout budgets. Partial results are preserved and flagged — timed-out stages are never silently dropped.</p>
+      </div>
+      <div class="proof-card">
+        <div class="proof-icon">🐘</div>
+        <h4>Postgres Semaphore Concurrency</h4>
+        <p>Advisory locks and semaphore-based concurrency control in PostgreSQL ensure parallel audit jobs never corrupt shared scoring state, exhaust connection pools, or produce race-conditioned results.</p>
+      </div>
+      <div class="proof-card">
+        <div class="proof-icon">⚡</div>
+        <h4>Cache Versioning</h4>
+        <p>Content-addressed cache keys with version stamps allow incremental re-audits without invalidating prior work. Changing one URL re-scores only its affected context bundle — not the full site.</p>
+      </div>
+      <div class="proof-card">
+        <div class="proof-icon">🎲</div>
+        <h4>Deterministic LLM Calls</h4>
+        <p>Temperature-zero, seed-controlled prompt dispatch ensures every run produces bit-reproducible scores. Score deltas between audit runs reflect content changes — not model stochasticity.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PIPELINE ── -->
+<section class="pipeline" id="pipeline">
+  <div class="section-inner">
+    <div class="section-head">
+      <div class="section-label">System Architecture</div>
+      <h2>The Retrieval Intelligence Pipeline</h2>
+      <p>Eight deterministic stages transform raw URLs into actionable retrieval scores, entity models, and structured recommendations — each stage dependent on validated output from the previous.</p>
+    </div>
+    <div class="pipeline-grid">
+      <div class="pipeline-node">
+        <div class="p-node-icon">🔗</div>
+        <div class="p-node-label">URL Discovery</div>
+        <div class="p-node-sub">Sitemap + Playwright</div>
+      </div>
+      <div class="pipeline-node">
+        <div class="p-node-icon">🎯</div>
+        <div class="p-node-label">Scope Selection</div>
+        <div class="p-node-sub">4 Scope Types</div>
+      </div>
+      <div class="pipeline-node">
+        <div class="p-node-icon">📦</div>
+        <div class="p-node-label">Context Bundle</div>
+        <div class="p-node-sub">Semantic Clustering</div>
+      </div>
+      <div class="pipeline-node">
+        <div class="p-node-icon">🕷️</div>
+        <div class="p-node-label">Crawl &amp; Extract</div>
+        <div class="p-node-sub">Playwright + Parser</div>
+      </div>
+      <div class="pipeline-node">
+        <div class="p-node-icon">🧠</div>
+        <div class="p-node-label">Prompt Intelligence</div>
+        <div class="p-node-sub">Query Generation</div>
+      </div>
+      <div class="pipeline-node">
+        <div class="p-node-icon">⚡</div>
+        <div class="p-node-label">Simulation</div>
+        <div class="p-node-sub">Deterministic LLM</div>
+      </div>
+      <div class="pipeline-node">
+        <div class="p-node-icon">📊</div>
+        <div class="p-node-label">Scoring</div>
+        <div class="p-node-sub">Multi-Dimension</div>
+      </div>
+      <div class="pipeline-node">
+        <div class="p-node-icon">✅</div>
+        <div class="p-node-label">Recommendations</div>
+        <div class="p-node-sub">Ranked &amp; Typed</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── INTEGRATIONS ── -->
+<section class="integrations" id="integrations">
+  <div class="section-inner">
+    <div class="section-head">
+      <div class="section-label">Technology Stack</div>
+      <h2>Powered By</h2>
+      <p>Chosen for production reliability, AI workload compatibility, and vector retrieval performance — not convenience defaults.</p>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-badge"><div class="tech-icon">🟢</div>Node.js</div>
+      <div class="tech-badge"><div class="tech-icon">⚛️</div>React / Next.js</div>
+      <div class="tech-badge"><div class="tech-icon">🐘</div>PostgreSQL</div>
+      <div class="tech-badge"><div class="tech-icon">🔢</div>pgvector</div>
+      <div class="tech-badge"><div class="tech-icon">🎭</div>Playwright</div>
+      <div class="tech-badge"><div class="tech-icon">🔑</div>Opaque Token Auth</div>
+      <div class="tech-badge"><div class="tech-icon">📡</div>DataForSEO</div>
+      <div class="tech-badge"><div class="tech-icon">🌐</div>Bright Data</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHY I BUILT IT ── -->
+<section class="why-built">
+  <div class="why-grid">
+    <div class="why-left">
+      <div class="section-label">Motivation</div>
+      <h2>LLMs are the new discovery layer. Brands have no visibility into it.</h2>
+      <p>When a user asks an LLM to recommend a product, compare services, or explain a concept, the model retrieves from its training context and any available RAG surfaces. <strong>SEO rank is irrelevant inside that retrieval.</strong></p>
+      <p>Traditional analytics measure what happens after a click. SEO tools measure position in a ranked list. Neither instrument the prior question: <strong>does the model retrieve your brand at all?</strong></p>
+      <p>RetrieveAI was built to close that instrumentation gap — with scoped audits, deterministic prompt simulation, and entity-level scoring that gives engineers a measurable model of brand retrievability inside generative systems.</p>
+    </div>
+    <div class="why-reasons">
+      <div class="why-reason">
+        <div class="wr-icon">🔄</div>
+        <div class="wr-text">
+          <h4>LLMs Are Replacing Traditional Discovery</h4>
+          <p>Generative AI interfaces are becoming the primary touchpoint for product discovery and comparison. Brand retrieval inside LLMs is now a measurable, improvable business surface.</p>
+        </div>
+      </div>
+      <div class="why-reason">
+        <div class="wr-icon">🔍</div>
+        <div class="wr-text">
+          <h4>SEO ≠ AI Retrieval</h4>
+          <p>Search ranking and LLM retrieval are architecturally distinct. Optimizing for PageRank does not optimize for token-level entity representation inside a language model's inference context.</p>
+        </div>
+      </div>
+      <div class="why-reason">
+        <div class="wr-icon">🎲</div>
+        <div class="wr-text">
+          <h4>Determinism Is Non-Negotiable for Scoring</h4>
+          <p>Without temperature-zero, seed-controlled dispatch, score deltas between audit runs are indistinguishable from model variance. Determinism is what makes regression tracking scientifically valid.</p>
+        </div>
+      </div>
+      <div class="why-reason">
+        <div class="wr-icon">🎯</div>
+        <div class="wr-text">
+          <h4>Scoped Audits Outperform Full-Site Sweeps</h4>
+          <p>Most retrieval problems are localized to specific intent surfaces. Scoped audits produce higher signal-to-noise ratios, lower API overhead, and faster iteration cycles than site-wide crawls.</p>
+        </div>
+      </div>
+      <div class="why-reason">
+        <div class="wr-icon">🏗️</div>
+        <div class="wr-text">
+          <h4>Engineering-First Architecture</h4>
+          <p>Reliability primitives — circuit breakers, semaphore concurrency, timeout budgets, cache versioning — were designed in from day one. Defensive engineering is a discipline, not an afterthought.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SCOPE MODES ── -->
+<section class="scope-modes" id="scope-modes">
+  <div class="scope-inner">
+    <div class="scope-head">
+      <div class="section-label" style="background:rgba(155,135,232,0.2);color:var(--plum-light);">Architectural Design</div>
+      <h2>Scope Modes</h2>
+      <p>Scope is the first architectural decision in every audit. Each mode defines a distinct envelope of page caps, prompt universe size, scoring weight distribution, entity reinforcement depth, and API cost control.</p>
+    </div>
+    <div class="scope-grid">
+      <div class="scope-card">
+        <span class="scope-tag">single_page</span>
+        <h3>Single Page</h3>
+        <p class="scope-desc">Surgical audit for one URL. Maximum signal concentration for a single intent surface.</p>
+        <div class="scope-detail"><span class="sd-key">Page Cap</span><span class="sd-val">1 URL</span></div>
+        <div class="scope-detail"><span class="sd-key">Prompt Universe</span><span class="sd-val">5–10 queries</span></div>
+        <div class="scope-detail"><span class="sd-key">Scoring Weights</span><span class="sd-val">Full weight on single entity</span></div>
+        <div class="scope-detail"><span class="sd-key">Entity Reinforcement</span><span class="sd-val">Isolated — no cross-URL signal</span></div>
+        <div class="scope-detail"><span class="sd-key">Cost Control</span><span class="sd-val">Minimal API cost</span></div>
+      </div>
+      <div class="scope-card featured">
+        <span class="scope-tag">context_cluster</span>
+        <h3>Context Cluster</h3>
+        <p class="scope-desc">Semantically related page group. Best fidelity-to-cost ratio across all scope modes.</p>
+        <div class="scope-detail"><span class="sd-key">Page Cap</span><span class="sd-val">5–25 URLs</span></div>
+        <div class="scope-detail"><span class="sd-key">Prompt Universe</span><span class="sd-val">20–40 queries</span></div>
+        <div class="scope-detail"><span class="sd-key">Scoring Weights</span><span class="sd-val">Distributed + cross-URL coherence</span></div>
+        <div class="scope-detail"><span class="sd-key">Entity Reinforcement</span><span class="sd-val">Cluster-level entity graph</span></div>
+        <div class="scope-detail"><span class="sd-key">Cost Control</span><span class="sd-val">Balanced — bundled context</span></div>
+      </div>
+      <div class="scope-card">
+        <span class="scope-tag">category</span>
+        <h3>Category</h3>
+        <p class="scope-desc">Full category-level audit including sub-pages, facets, and filter surfaces.</p>
+        <div class="scope-detail"><span class="sd-key">Page Cap</span><span class="sd-val">25–150 URLs</span></div>
+        <div class="scope-detail"><span class="sd-key">Prompt Universe</span><span class="sd-val">50–100 queries</span></div>
+        <div class="scope-detail"><span class="sd-key">Scoring Weights</span><span class="sd-val">Category + sub-category weights</span></div>
+        <div class="scope-detail"><span class="sd-key">Entity Reinforcement</span><span class="sd-val">Hierarchical entity model</span></div>
+        <div class="scope-detail"><span class="sd-key">Cost Control</span><span class="sd-val">Moderate — semaphore-gated</span></div>
+      </div>
+      <div class="scope-card">
+        <span class="scope-tag">full_site</span>
+        <h3>Full Site</h3>
+        <p class="scope-desc">Complete site-wide retrieval intelligence with full concurrency and budget controls active.</p>
+        <div class="scope-detail"><span class="sd-key">Page Cap</span><span class="sd-val">Unlimited</span></div>
+        <div class="scope-detail"><span class="sd-key">Prompt Universe</span><span class="sd-val">100–500+ queries</span></div>
+        <div class="scope-detail"><span class="sd-key">Scoring Weights</span><span class="sd-val">Domain-wide normalization</span></div>
+        <div class="scope-detail"><span class="sd-key">Entity Reinforcement</span><span class="sd-val">Full site entity graph</span></div>
+        <div class="scope-detail"><span class="sd-key">Cost Control</span><span class="sd-val">Postgres semaphore + budget cap</span></div>
+      </div>
+    </div>
+    <div class="scope-table-wrap">
+      <table class="scope-table">
+        <thead>
+          <tr>
+            <th>Scope Mode</th>
+            <th>Entity Disambiguation</th>
+            <th>Context Bundling</th>
+            <th>Cross-URL Scoring</th>
+            <th>Semaphore Concurrency</th>
+            <th>Commerce Layer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>single_page</td>
+            <td><span class="partial">Partial</span></td>
+            <td class="no-val">—</td>
+            <td class="no-val">—</td>
+            <td class="no-val">—</td>
+            <td class="no-val">—</td>
+          </tr>
+          <tr class="highlight">
+            <td>context_cluster</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td class="no-val">—</td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>category</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="partial">Partial</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>full_site</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ── -->
+<section class="faq">
+  <div class="faq-inner">
+    <div class="section-head">
+      <div class="section-label">FAQ</div>
+      <h2>Frequently Asked Questions</h2>
+      <p>Architecture and design decisions explained clearly.</p>
+    </div>
+    <div class="faq-grid">
+      <div class="faq-item">
+        <h4><span>Is this an SEO tool?</span><span class="q-num">01</span></h4>
+        <p>No. SEO tools optimize for search engine rankings — crawl coverage, backlink authority, keyword density. RetrieveAI audits how LLMs retrieve and represent a brand inside generative inference. These are architecturally distinct problems requiring different instrumentation and different remediation paths.</p>
+      </div>
+      <div class="faq-item">
+        <h4><span>How is retrieval different from ranking?</span><span class="q-num">02</span></h4>
+        <p>Ranking measures position in a sorted result list. Retrieval measures inclusion in a model's consideration set. A brand that never appears in an LLM-generated response has zero retrieval coverage — regardless of search rank. RetrieveAI measures retrieval directly using scoped prompt simulation, not search index proxies.</p>
+      </div>
+      <div class="faq-item">
+        <h4><span>Why scoped audits instead of full-site always?</span><span class="q-num">03</span></h4>
+        <p>Full-site sweeps are expensive in LLM API calls, Playwright compute time, and result noise. Most retrieval problems are localized to specific intent surfaces. Scoped audits produce higher-fidelity, lower-noise signals faster and at lower cost per actionable insight generated.</p>
+      </div>
+      <div class="faq-item">
+        <h4><span>Why deterministic LLM scoring?</span><span class="q-num">04</span></h4>
+        <p>Without temperature-zero, seed-controlled dispatch, score changes between audit runs could reflect model stochasticity rather than content changes. Determinism makes the scoring system scientifically valid — a delta in AI Visibility Score means the content changed, not the random seed. This is a foundational architectural requirement.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── BUILD STATUS ── -->
+<section class="build-status" id="build-status">
+  <div class="build-inner">
+    <div class="section-head">
+      <div class="section-label">Current Build Status</div>
+      <h2>Prototype Roadmap</h2>
+      <p>Active development progress across all pipeline modules. Features are being built, tested, and validated against real audit runs.</p>
+    </div>
+    <div class="build-list">
+
+      <div class="build-item done">
+        <div class="build-status-icon">✅</div>
+        <div class="build-item-text">
+          <h4>URL Discovery Engine</h4>
+          <p>Sitemap parsing, Playwright-based link extraction, URL classification and deduplication. Produces a typed URL inventory as the first pipeline stage input, handling redirects and canonical resolution.</p>
+        </div>
+        <span class="build-badge badge-done">Complete</span>
+      </div>
+
+      <div class="build-item done">
+        <div class="build-status-icon">✅</div>
+        <div class="build-item-text">
+          <h4>Context Cluster Generator</h4>
+          <p>Semantic clustering of URL sets into coherent retrieval contexts. Bundles related pages before prompt dispatch to reduce token overhead, improve simulation fidelity, and enable cross-URL entity coherence scoring.</p>
+        </div>
+        <span class="build-badge badge-done">Complete</span>
+      </div>
+
+      <div class="build-item done">
+        <div class="build-status-icon">✅</div>
+        <div class="build-item-text">
+          <h4>AI Visibility Score Engine</h4>
+          <p>Composite scoring system combining entity recall rate, prompt match frequency, and representation density into a normalized 0–100 visibility score per URL and context cluster.</p>
+        </div>
+        <span class="build-badge badge-done">Complete</span>
+      </div>
+
+      <div class="build-item done">
+        <div class="build-status-icon">✅</div>
+        <div class="build-item-text">
+          <h4>Prompt Simulation Engine</h4>
+          <p>Deterministic, temperature-zero LLM prompt dispatcher. Generates real-world query patterns per scope, dispatches with seed control, and parses structured retrieval results for downstream scoring stages.</p>
+        </div>
+        <span class="build-badge badge-done">Complete</span>
+      </div>
+
+      <div class="build-item in-progress">
+        <div class="build-status-icon">🔄</div>
+        <div class="build-item-text">
+          <h4>Commerce Layer v2 — In Progress</h4>
+          <p>Purchase-intent signal density scoring and AI-assisted product catalog intelligence. v1 ships basic commerce surface detection; v2 adds generative shopping simulation and structured product data schema validation.</p>
+        </div>
+        <span class="build-badge badge-progress">In Progress</span>
+      </div>
+
+      <div class="build-item planned">
+        <div class="build-status-icon">🕒</div>
+        <div class="build-item-text">
+          <h4>Prompt Commerce Transactions — Planned</h4>
+          <p>End-to-end simulation of purchase-intent prompt flows through generative AI interfaces. Models how AI-assisted commerce surfaces retrieve, recommend, and convert product entities from the retrieval layer.</p>
+        </div>
+        <span class="build-badge badge-planned">Planned</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA STRIP ── -->
+<div class="cta-strip">
+  <h2>An Engineering-First Approach to AI Retrieval.</h2>
+  <p>RetrieveAI is an active portfolio prototype. If you're working on retrieval infrastructure, AI visibility tooling, or post-search commerce systems — this architecture may be relevant to your work.</p>
+  <a href="#screens" class="btn btn-lime">View Prototype Screens →</a>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="f-logo">⚙️ RetrieveAI</div>
+        <p class="f-tagline">AI Retrieval Engineering Prototype. Built for the post-search era.</p>
+        <div class="proto-note-footer">Under Active Development</div>
+        <div class="social-links">
+          <a class="social-link" href="#">in</a>
+          <a class="social-link" href="#">gh</a>
+          <a class="social-link" href="#">✉</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Prototype</h5>
+        <ul>
+          <li><a href="#screens">Prototype Screens</a></li>
+          <li><a href="#services">Core Modules</a></li>
+          <li><a href="#pipeline">Pipeline Architecture</a></li>
+          <li><a href="#scope-modes">Scope Modes</a></li>
+          <li><a href="#build-status">Build Status</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Connect</h5>
+        <ul>
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">GitHub</a></li>
+          <li><a href="#">Portfolio</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 RetrieveAI · AI Retrieval Engineering Prototype · Not commercially launched.</p>
+      <span class="built-by">Built &amp; Designed by <strong>Akshay</strong></span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
